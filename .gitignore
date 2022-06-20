@@ -35,3 +35,7 @@ yarn-error.log*
 
 # Optional eslint cache
 .eslintcache
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
