@@ -13,9 +13,11 @@ export const SetSupabaseAuth: FC<{ children: JSX.Element }> = ({
   useEffect(() => {
     if (session) {
       supabase.auth.setAuth(session.token);
-      if (isLoading) {
-        setLoading(false);
-      }
+      setLoading(false);
+    }
+
+    if (status === "unauthenticated") {
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);

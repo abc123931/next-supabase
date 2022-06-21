@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import type { FC } from "react";
+import type { ChangeEventHandler, FC } from "react";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -11,6 +11,7 @@ type TodoType = {
   content: string;
   done: boolean;
   user_id: string;
+  created_at: string;
 };
 
 export const Todo: FC = () => {
@@ -49,17 +50,23 @@ export const Todo: FC = () => {
 
 const TodoList: FC = () => {
   const { data: session } = useSession();
-  const [todos, setTodos] = useState<TodoType[]>();
+  const [todos, setTodos] = useState<TodoType[]>([]);
 
   const fetchTodos = async () => {
     if (!session) {
       return;
     }
 
+    // const { data, error } = await supabase
+    //   .from<TodoType & { user: { name: string } }>("todos")
+    //   .select("*, user:todos_user_id_fkey ( name )")
+    //   .eq("user_id", session.user.id)
+    //   .order("created_at", { ascending: true });
     const { data, error } = await supabase
       .from<TodoType>("todos")
       .select("*")
-      .eq("user_id", session.user.id);
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: true });
 
     if (!data || error) {
       alert("エラーです");
@@ -70,6 +77,29 @@ const TodoList: FC = () => {
 
   useEffect(() => {
     fetchTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const todoListener = supabase
+      .from<TodoType>("todos")
+      .on("INSERT", (payload) => {
+        setTodos((prev) => {
+          return [...prev, payload.new];
+        });
+      })
+      .on("DELETE", (payload) => {
+        setTodos((prev) => {
+          return prev.filter((todo) => {
+            return todo.id !== payload.old.id;
+          });
+        });
+      })
+      .subscribe();
+
+    return () => {
+      todoListener.unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -98,9 +128,28 @@ const TodoItem: FC<{ todo: TodoType }> = ({ todo }) => {
     }
   }, [todo.id]);
 
+  const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    async (e) => {
+      const { error } = await supabase
+        .from<TodoType>("todos")
+        .update({ done: e.target.checked })
+        .eq("id", todo.id);
+
+      if (error) {
+        alert("エラー");
+      }
+    },
+    [todo.id]
+  );
+
   return (
     <div>
       <p>{todo.content}</p>
+      <input
+        type="checkbox"
+        onChange={handleChange}
+        defaultChecked={todo.done}
+      />
       <button type="button" onClick={handleDelete}>
         削除
       </button>

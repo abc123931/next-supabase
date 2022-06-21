@@ -17,7 +17,7 @@ const App: CustomAppPage = ({ Component, pageProps }) => {
       <Head>
         <title>nexst</title>
       </Head>
-      <SessionProvider session={pageProps.session} refetchInterval={10}>
+      <SessionProvider session={pageProps.session} refetchInterval={5 * 60}>
         <SetSupabaseAuth>
           {getLayout(<Component {...pageProps} />)}
         </SetSupabaseAuth>
