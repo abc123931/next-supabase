@@ -4,7 +4,7 @@ import { pagesPath } from "src/lib/$path";
 
 const items = [
   { href: pagesPath.$url().pathname, label: "Root" },
-  { href: pagesPath.about.$url().pathname, label: "About" },
+  { href: pagesPath.todo.$url().pathname, label: "Todo" },
 ];
 
 /**

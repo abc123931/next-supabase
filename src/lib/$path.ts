@@ -1,6 +1,6 @@
 export const pagesPath = {
-  "about": {
-    $url: (url?: { hash?: string }) => ({ pathname: '/about' as const, hash: url?.hash })
+  "todo": {
+    $url: (url?: { hash?: string }) => ({ pathname: '/todo' as const, hash: url?.hash })
   },
   $url: (url?: { hash?: string }) => ({ pathname: '/' as const, hash: url?.hash })
 }
