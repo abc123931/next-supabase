@@ -41,6 +41,8 @@ export default NextAuth({
       const encodedToken = sign(
         {
           ...token,
+          sub: undefined,
+          userId: token.sub,
           aud: "authenticated",
           role: "authenticated",
           user_metadata: {},
