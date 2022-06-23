@@ -1,8 +1,10 @@
-# Next.js starter template.
+# Next.js supabase
 
-- Next.js
-- TypeScript
-- ESLint
-- Prettier
-- Jest
-- Tailwind CSS
+```
+# supabase立ち上げ
+supabase start
+
+# nextjs開発環境立ち上げ
+yarn dev
+
+```
